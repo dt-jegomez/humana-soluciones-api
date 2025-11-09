@@ -57,7 +57,7 @@ La UI estará disponible en `http://localhost:8000/api/documentation`.
 | POST | `/api/properties` | Crea un inmueble con validaciones y soporta múltiples imágenes (URL). |
 | PUT | `/api/properties/{id}` | Actualiza los datos e imágenes de un inmueble existente. |
 | DELETE | `/api/properties/{id}` | Elimina un inmueble (y sus imágenes) de forma permanente. |
-| GET | `/api/catalog/cities` | Consulta de ciudades colombianas consumiendo Datos Abiertos. |
+| GET | `/api/catalog/cities` | Consulta de ciudades colombianas consumiendo API Colombia. |
 
 ### Parámetros de filtrado destacados
 
@@ -69,7 +69,30 @@ La UI estará disponible en `http://localhost:8000/api/documentation`.
 
 ## API Externa
 
-El servicio consume datos abiertos de Colombia para obtener ciudades (`https://www.datos.gov.co/resource/xdk5-pm3f.json`). Si cuentas con un token de aplicación de Datos Abiertos puedes definir `DATOS_GOV_APP_TOKEN` en el `.env` para incrementar los límites de consumo.
+El servicio ahora consume `https://api-colombia.com/api/v1/City` para obtener el listado de ciudades de Colombia.
+
+Ejemplo de respuesta:
+
+```json
+[
+  {
+    "id": 87,
+    "name": "Puerto Nare",
+    "description": "",
+    "surface": null,
+    "population": null,
+    "postalCode": null,
+    "departmentId": 2,
+    "department": null,
+    "touristAttractions": null,
+    "presidents": null,
+    "indigenousReservations": null,
+    "airports": null,
+    "radios": null
+  }
+  // ...
+]
+```
 
 ## Variables de entorno
 

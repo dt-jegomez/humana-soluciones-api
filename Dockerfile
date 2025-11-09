@@ -29,4 +29,5 @@ RUN chmod +x /usr/local/bin/project-setup
 
 USER $user
 
-CMD ["bash", "-lc", "if [ ! -f composer.json ]; then project-setup; fi && php-fpm"]
+# Ensure php-fpm is found when running as a non-root user (sbin not in PATH)
+CMD ["bash", "-lc", "if [ ! -f composer.json ]; then project-setup; fi && exec /usr/local/sbin/php-fpm -F"]

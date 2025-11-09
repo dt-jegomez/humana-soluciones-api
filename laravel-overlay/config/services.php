@@ -24,8 +24,4 @@ return [
             'channel' => env('SLACK_NOTIFICATIONS_CHANNEL'),
         ],
     ],
-
-    'datos_gov' => [
-        'token' => env('DATOS_GOV_APP_TOKEN'),
-    ],
 ];

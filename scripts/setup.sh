@@ -13,7 +13,15 @@ cd "$PROJECT_DIR"
 
 if [ ! -f artisan ]; then
   echo "Creating Laravel skeleton..."
-  composer create-project --no-interaction --prefer-dist laravel/laravel="${SKELETON_VERSION}" .
+  # composer create-project fails if the target directory is not empty.
+  # Use a temporary directory and then sync into PROJECT_DIR to tolerate placeholders like .gitkeep.
+  TMPDIR=$(mktemp -d)
+  trap 'rm -rf "$TMPDIR"' EXIT
+  (
+    cd "$TMPDIR"
+    composer create-project --no-interaction --prefer-dist "laravel/laravel=${SKELETON_VERSION}" app
+    rsync -a app/ "$PROJECT_DIR"/
+  )
 fi
 
 echo "Installing API tooling dependencies..."

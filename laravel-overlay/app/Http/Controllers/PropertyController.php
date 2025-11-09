@@ -17,30 +17,7 @@ use OpenApi\Annotations as OA;
  */
 class PropertyController extends Controller
 {
-    /**
-     * @OA\Schema(
-     *     schema="PropertyImagePayload",
-     *     @OA\Property(property="url", type="string", format="uri", example="https://example.com/image.jpg"),
-     *     @OA\Property(property="description", type="string", nullable=true, example="Fachada principal"),
-     *     @OA\Property(property="is_primary", type="boolean", nullable=true, example=true)
-     * )
-     *
-     * @OA\Schema(
-     *     schema="PropertyPayload",
-     *     required={"title","city","address","bedrooms","bathrooms","consignation_type"},
-     *     @OA\Property(property="title", type="string", example="Apartamento moderno en El Poblado"),
-     *     @OA\Property(property="city", type="string", example="Medellín"),
-     *     @OA\Property(property="address", type="string", example="Cra 43 #10-50"),
-     *     @OA\Property(property="bedrooms", type="integer", example=3),
-     *     @OA\Property(property="bathrooms", type="integer", example=2),
-     *     @OA\Property(property="consignation_type", type="string", enum={"rent","sale"}, example="rent"),
-     *     @OA\Property(property="rent_price", type="number", format="float", nullable=true, example=2500000),
-     *     @OA\Property(property="sale_price", type="number", format="float", nullable=true, example=350000000),
-     *     @OA\Property(property="area", type="number", format="float", nullable=true, example=95.5),
-     *     @OA\Property(property="description", type="string", nullable=true),
-     *     @OA\Property(property="images", type="array", @OA\Items(ref="#/components/schemas/PropertyImagePayload"))
-     * )
-     */
+    /** */
 
     /**
      * @OA\Get(
@@ -127,7 +104,7 @@ class PropertyController extends Controller
      * @OA\Post(
      *     path="/api/properties",
      *     summary="Crear un inmueble",
-     *     @OA\RequestBody(required=true, @OA\MediaType(mediaType="application/json", @OA\Schema(ref="#/components/schemas/PropertyPayload"))),
+     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/PropertyPayload")),
      *     @OA\Response(response=201, description="Inmueble creado")
      * )
      */
@@ -157,7 +134,7 @@ class PropertyController extends Controller
      *     path="/api/properties/{property}",
      *     summary="Actualizar un inmueble",
      *     @OA\Parameter(name="property", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\RequestBody(required=true, @OA\MediaType(mediaType="application/json", @OA\Schema(ref="#/components/schemas/PropertyPayload"))),
+     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/PropertyPayload")),
      *     @OA\Response(response=200, description="Inmueble actualizado")
      * )
      */
@@ -198,10 +175,10 @@ class PropertyController extends Controller
     /**
      * @OA\Get(
      *     path="/api/catalog/cities",
-     *     summary="Consultar ciudades colombianas desde datos abiertos",
-     *     @OA\Parameter(name="department", in="query", @OA\Schema(type="string")),
-     *     @OA\Parameter(name="search", in="query", @OA\Schema(type="string")),
-     *     @OA\Parameter(name="limit", in="query", @OA\Schema(type="integer")),
+     *     summary="Consultar ciudades colombianas desde API Colombia",
+     *     @OA\Parameter(name="department", in="query", description="Departamento (nombre o id)", @OA\Schema(type="string")),
+     *     @OA\Parameter(name="search", in="query", description="Búsqueda por nombre de ciudad", @OA\Schema(type="string")),
+     *     @OA\Parameter(name="limit", in="query", description="Cantidad máxima a retornar (1-100)", @OA\Schema(type="integer")),
      *     @OA\Response(response=200, description="Listado de ciudades")
      * )
      */
