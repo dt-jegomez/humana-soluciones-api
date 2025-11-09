@@ -2,7 +2,6 @@
 set -euo pipefail
 
 PROJECT_DIR=${PROJECT_DIR:-/var/www/html}
-SKELETON_VERSION=${LARAVEL_VERSION:-"^10.0"}
 
 if [ ! -d "$PROJECT_DIR" ]; then
   echo "Project directory $PROJECT_DIR does not exist" >&2
@@ -11,33 +10,26 @@ fi
 
 cd "$PROJECT_DIR"
 
-if [ ! -f artisan ]; then
-  echo "Creating Laravel skeleton..."
-  # composer create-project fails if the target directory is not empty.
-  # Use a temporary directory and then sync into PROJECT_DIR to tolerate placeholders like .gitkeep.
-  TMPDIR=$(mktemp -d)
-  trap 'rm -rf "$TMPDIR"' EXIT
-  (
-    cd "$TMPDIR"
-    composer create-project --no-interaction --prefer-dist "laravel/laravel=${SKELETON_VERSION}" app
-    rsync -a app/ "$PROJECT_DIR"/
-  )
+if [ ! -f composer.json ]; then
+  echo "composer.json not found in $PROJECT_DIR; please ensure the Laravel project is present." >&2
+  exit 1
 fi
 
-echo "Installing API tooling dependencies..."
-composer require --no-interaction darkaonline/l5-swagger:^8.5 guzzlehttp/guzzle:^7.8
-
-php artisan vendor:publish --provider="L5Swagger\\L5SwaggerServiceProvider" --tag=config --force
-php artisan vendor:publish --provider="L5Swagger\\L5SwaggerServiceProvider" --tag=views --force
-
-OVERLAY_DIR=${PROJECT_OVERLAY:-/opt/project-overlay}
-
-if [ -d "$OVERLAY_DIR" ]; then
-  echo "Applying project overlay from $OVERLAY_DIR..."
-  rsync -a "$OVERLAY_DIR"/ "$PROJECT_DIR"/
+if [ ! -d vendor ]; then
+  echo "Installing Composer dependencies..."
+  composer install --no-interaction --prefer-dist
 fi
-php artisan key:generate --ansi
-php artisan config:clear
+
+if [ ! -f config/l5-swagger.php ]; then
+  php artisan vendor:publish --provider="L5Swagger\\L5SwaggerServiceProvider" --tag=config --force
+fi
+
+if [ ! -d resources/views/vendor/l5-swagger ]; then
+  php artisan vendor:publish --provider="L5Swagger\\L5SwaggerServiceProvider" --tag=views --force
+fi
+
+php artisan key:generate --ansi || true
+php artisan config:clear || true
 
 mkdir -p storage/logs
 php artisan storage:link || true

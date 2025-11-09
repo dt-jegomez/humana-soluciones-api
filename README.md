@@ -1,6 +1,6 @@
 # Humana Soluciones - Inmobiliaria API
 
-Proyecto base para la gestión de inmuebles en Laravel 10 usando PostgreSQL y Docker. El repositorio incluye un conjunto de scripts y una superposición de código (`laravel-overlay/`) que se aplica sobre un esqueleto limpio de Laravel durante la fase de construcción.
+Proyecto base para la gestión de inmuebles en Laravel 10 usando PostgreSQL y Docker. El repositorio incluye un conjunto de scripts y la aplicación completa dentro de `application/`, lista para montarse en los contenedores.
 
 ## Requisitos
 
@@ -10,7 +10,7 @@ Proyecto base para la gestión de inmuebles en Laravel 10 usando PostgreSQL y Do
 ## Puesta en marcha rápida
 
 ```bash
-# Construir contenedores y preparar el proyecto (descarga Laravel, aplica overlay, ejecuta migraciones y genera Swagger)
+# Construir contenedores y preparar el proyecto (instala dependencias, ejecuta migraciones y genera Swagger)
 docker compose up --build
 ```
 
@@ -27,8 +27,7 @@ Una vez listos los contenedores, la API estará disponible en `http://localhost:
 - `docker-compose.yml`: orquestación de servicios.
 - `Dockerfile`: imagen PHP con script de bootstrap.
 - `scripts/setup.sh`: crea el proyecto base de Laravel, instala dependencias adicionales y aplica la superposición.
-- `laravel-overlay/`: código propio del dominio inmobiliario (modelos, controladores, migraciones, recursos, configuración Swagger, etc.).
-- `application/`: carpeta montada como volumen donde se genera el proyecto final de Laravel.
+- `application/`: proyecto Laravel versionado que se monta como volumen dentro del contenedor y contiene todo el código de dominio.
 
 ## Migraciones y seeders
 
@@ -57,7 +56,6 @@ La UI estará disponible en `http://localhost:8000/api/documentation`.
 | POST | `/api/properties` | Crea un inmueble con validaciones y soporta múltiples imágenes (URL). |
 | PUT | `/api/properties/{id}` | Actualiza los datos e imágenes de un inmueble existente. |
 | DELETE | `/api/properties/{id}` | Elimina un inmueble (y sus imágenes) de forma permanente. |
-| GET | `/api/catalog/cities` | Consulta de ciudades colombianas consumiendo API Colombia. |
 
 ### Parámetros de filtrado destacados
 
@@ -66,33 +64,6 @@ La UI estará disponible en `http://localhost:8000/api/documentation`.
 - `bedrooms`: acepta formato `bedrooms[]=1&bedrooms[]=2` o `bedrooms=1,2`.
 - `consignation_type`: `rent` o `sale`.
 - `per_page`: controla la paginación (1-50).
-
-## API Externa
-
-El servicio ahora consume `https://api-colombia.com/api/v1/City` para obtener el listado de ciudades de Colombia.
-
-Ejemplo de respuesta:
-
-```json
-[
-  {
-    "id": 87,
-    "name": "Puerto Nare",
-    "description": "",
-    "surface": null,
-    "population": null,
-    "postalCode": null,
-    "departmentId": 2,
-    "department": null,
-    "touristAttractions": null,
-    "presidents": null,
-    "indigenousReservations": null,
-    "airports": null,
-    "radios": null
-  }
-  // ...
-]
-```
 
 ## Variables de entorno
 

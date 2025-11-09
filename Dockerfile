@@ -24,10 +24,9 @@ RUN useradd -G www-data,root -u $uid -d /home/$user $user \
 WORKDIR /var/www/html
 
 COPY scripts/setup.sh /usr/local/bin/project-setup
-COPY laravel-overlay /opt/project-overlay
 RUN chmod +x /usr/local/bin/project-setup
 
 USER $user
 
 # Ensure php-fpm is found when running as a non-root user (sbin not in PATH)
-CMD ["bash", "-lc", "if [ ! -f composer.json ]; then project-setup; fi && exec /usr/local/sbin/php-fpm -F"]
+CMD ["bash", "-lc", "project-setup && exec /usr/local/sbin/php-fpm -F"]
